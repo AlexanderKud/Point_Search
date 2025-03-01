@@ -4,7 +4,7 @@ import os
 import sys
 import multiprocessing as mp
 #============================================================================== 
-f_list = ['settings.txt', 'settings1.txt', 'settings2.txt', 'bloom1.bf', 'bloom2.bf']
+f_list = ['settings1.txt', 'settings2.txt', 'bloom1.bf', 'bloom2.bf']
 arr = os.listdir()
 for f in arr:
     if f in f_list:
@@ -60,12 +60,6 @@ f2 = open(settingsFile2, "w")
 f2.write(f"{secp256k1.point_to_cpub(starting_point)}\n")
 f2.write(f"{stride_sum}\n")
 f2.close()
-settingsFile = 'settings.txt'
-f = open(settingsFile, "w")
-f.write(f"{secp256k1.point_to_cpub(starting_point)}\n")
-f.write(f"{secp256k1.point_to_cpub(starting_point)}\n")
-f.write(f"{stride_sum}\n")
-f.close()
 print(f"[{datetime.now().strftime("%H:%M:%S")}] Settings written to file")
 #==============================================================================
 def bloom_create1():
