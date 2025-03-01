@@ -26,7 +26,7 @@ print(f"[{datetime.now().strftime("%H:%M:%S")}] S_table and P_table generated")
 #==============================================================================
 start_range = 44
 end_range   = 45
-block_width = 22
+block_width = 23
         
 start_point = P_table[start_range]
 end_point   = P_table[end_range]
