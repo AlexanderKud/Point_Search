@@ -6,7 +6,7 @@
 [01:59:19] Creating bloomfile1
 [02:01:06] Writing Bloomfilter to bloom2.bf
 [02:01:06] Writing Bloomfilter to bloom1.bf
-[02:01:06] Done. Press <ENTER> to exit...
+[02:01:06] Done
 </pre>
 
 <b>point_search.py</b>
@@ -21,5 +21,4 @@
 [02:05:35] BloomFilter Hit bloom2.bf (Odd Point) [Higher Range Half]
 [02:05:35] Privatekey: 29414800229793
 [02:05:35] Time taken : 2.57 sec
-[02:05:35] Press <ENTER> to exit
 </pre>
