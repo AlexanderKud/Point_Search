@@ -31,7 +31,7 @@ print(f"[{datetime.now().strftime("%H:%M:%S")}] S_table and P_table generated")
 #============================================================================== 
 start_range = 44
 end_range   = 45
-block_width = 22
+block_width = 23
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 pow10_nums = break_down_to_pow10(2**block_width)
 pow10_points = []
