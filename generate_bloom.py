@@ -1,10 +1,10 @@
-import secp256k1 #https://github.com/iceland2k14/secp256k1
+import secp256k1
 from datetime import datetime
 import os
 import sys
 import multiprocessing as mp
 #============================================================================== 
-f_list = ['settings1.txt', 'settings2.txt', 'bloom1.bf', 'bloom2.bf']
+f_list = ['settings.txt', 'settings1.txt', 'settings2.txt', 'bloom1.bf', 'bloom2.bf']
 arr = os.listdir()
 for f in arr:
     if f in f_list:
@@ -15,18 +15,24 @@ pk = 1;
 for i in range(256):
     P_table.append(secp256k1.scalar_multiplication(pk))
     pk *= 2
+    
+S_table = []
+pk = 1
+for k in range(256): 
+    S_table.append(pk) 
+    pk *= 2
 
-print(f"[{datetime.now().strftime("%H:%M:%S")}] P_table generated")
+print(f"[{datetime.now().strftime("%H:%M:%S")}] S_table and P_table generated")
 #==============================================================================
 start_range = 44
 end_range   = 45
-block_width = 20
+block_width = 22
         
 start_point = P_table[start_range]
 end_point   = P_table[end_range]
 point_05 = secp256k1.scalar_multiplication(57896044618658097711785492504343953926418782139537452191302581570759080747169)
 
-search_pub = '0307cc34433cb76bf50ee2b2a5227ac06ba3019ee52c6ee0dffdcc8818c627c8e4'
+search_pub = '032401b3ea929068ef8d5839b4634edaf0c45f9b4dcface9f1ba1fd44cea064c36'
 puzzle_point = secp256k1.pub2upub(search_pub)
 
 puzzle_point_05 = secp256k1.point_addition(puzzle_point, point_05)
@@ -54,6 +60,12 @@ f2 = open(settingsFile2, "w")
 f2.write(f"{secp256k1.point_to_cpub(starting_point)}\n")
 f2.write(f"{stride_sum}\n")
 f2.close()
+settingsFile = 'settings.txt'
+f = open(settingsFile, "w")
+f.write(f"{secp256k1.point_to_cpub(starting_point)}\n")
+f.write(f"{secp256k1.point_to_cpub(starting_point)}\n")
+f.write(f"{stride_sum}\n")
+f.close()
 print(f"[{datetime.now().strftime("%H:%M:%S")}] Settings written to file")
 #==============================================================================
 def bloom_create1():
