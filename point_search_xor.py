@@ -29,9 +29,9 @@ for k in range(256):
 
 print(f"[{datetime.now().strftime("%H:%M:%S")}] S_table and P_table generated")
 #============================================================================== 
-start_range = 44
-end_range   = 45
-block_width = 23
+start_range = 57
+end_range   = 58
+block_width = 28
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 pow10_nums = break_down_to_pow10(2**block_width)
 pow10_points = []
@@ -43,17 +43,17 @@ first_scalar  = S_table[start_range - 1]
 second_scalar = S_table[start_range - 2]
 pre_calc_sum = first_scalar + second_scalar
 
-search_pub = '032401b3ea929068ef8d5839b4634edaf0c45f9b4dcface9f1ba1fd44cea064c36'
+search_pub = '028b8715f7c25858790d2207fb84be96567f3d3367122fbcd69221ab063039167c'
 puzzle_point = secp256k1.pub2upub(search_pub)
 point_05 = secp256k1.scalar_multiplication(57896044618658097711785492504343953926418782139537452191302581570759080747169)
 puzzle_point_05 = secp256k1.point_addition(puzzle_point, point_05)
 
-bloomfile1 = 'bloom1.bf'
+bloomfile1 = 'xor_bloom1.xf'
 print(f'[{datetime.now().strftime("%H:%M:%S")}] Loading bloomfilter {bloomfile1}')
-_bits1, _hashes1, _bf1, _fp1, _elem1 = secp256k1.read_bloom_file(bloomfile1)
-bloomfile2 = 'bloom2.bf'
+_bits1, _hashes1, _xf1, _fp1, _elem1 = secp256k1.read_xor_file(bloomfile1)
+bloomfile2 = 'xor_bloom2.xf'
 print(f'[{datetime.now().strftime("%H:%M:%S")}] Loading bloomfilter {bloomfile2}')
-_bits2, _hashes2, _bf2, _fp2, _elem2 = secp256k1.read_bloom_file(bloomfile2)
+_bits2, _hashes2, _xf2, _fp2, _elem2 = secp256k1.read_xor_file(bloomfile2)
 print(f'[{datetime.now().strftime("%H:%M:%S")}] Each BloomFilter size: 2^{block_width} ({S_table[block_width]})')
 print(f'[{datetime.now().strftime("%H:%M:%S")}] Stride size: 2^{int(math.log2(stride_status))} ({stride_status})') 
 print(f'[{datetime.now().strftime("%H:%M:%S")}] Search Range: 2^{start_range} .. 2^{end_range} [{S_table[start_range]}-{S_table[end_range]}]')
@@ -64,7 +64,7 @@ starttime = time.time()
 
 def addition_search():
     save_counter = 0
-    settingsFile = 'settings1.txt'
+    settingsFile = 'x_settings1.txt'
     settings = open(settingsFile, 'r')
     starting_point = secp256k1.pub2upub(settings.readline().strip())
     stride_sum = int(settings.readline().strip())
@@ -74,14 +74,14 @@ def addition_search():
     
     while True:
         cpub = secp256k1.point_to_cpub(starting_point)
-        if secp256k1.check_in_bloom(cpub, _bits1, _hashes1, _bf1):
+        if secp256k1.check_in_xor(cpub, _bits1, _hashes1, _xf1):
             print(f'\n[{datetime.now().strftime("%H:%M:%S")}] BloomFilter Hit {bloomfile1} (Even Point) [Lower Range Half]')            
             P = starting_point
             privkey_num = []
             for i,p in enumerate(pow10_points):
                 count = 0
                 cpub1 = secp256k1.point_to_cpub(P)
-                while secp256k1.check_in_bloom(cpub1, _bits1, _hashes1, _bf1):
+                while secp256k1.check_in_xor(cpub1, _bits1, _hashes1, _xf1):
                     P = secp256k1.point_subtraction(P, p)
                     cpub1 = secp256k1.point_to_cpub(P)
                     count += 1
@@ -98,16 +98,16 @@ def addition_search():
             print(f'[{datetime.now().strftime("%H:%M:%S")}] False Positive')
                 
             
-        if secp256k1.check_in_bloom(cpub, _bits2, _hashes2, _bf2):
+        if secp256k1.check_in_xor(cpub, _bits2, _hashes2, _xf2):
             print(f'\n[{datetime.now().strftime("%H:%M:%S")}] BloomFilter Hit {bloomfile2} (Odd Point) [Lower Range Half]')
             P = starting_point
             privkey_num = []
             for i,p in enumerate(pow10_points):
                 count = 0
-                cpub1 = secp256k1.point_to_cpub(P)
-                while secp256k1.check_in_bloom(cpub1, _bits2, _hashes2, _bf2):
+                cpub2 = secp256k1.point_to_cpub(P)
+                while secp256k1.check_in_xor(cpub2, _bits2, _hashes2, _xf2):
                     P = secp256k1.point_subtraction(P, p)
-                    cpub1 = secp256k1.point_to_cpub(P)
+                    cpub2 = secp256k1.point_to_cpub(P)
                     count += 1
                 privkey_num.append(pow10_nums[i] * (count - 1))
                 P = secp256k1.point_addition(P, p)                
@@ -135,7 +135,7 @@ def addition_search():
             
 def subtraction_search():
     save_counter = 0
-    settingsFile = 'settings2.txt'
+    settingsFile = 'x_settings2.txt'
     settings = open(settingsFile, 'r')
     starting_point = secp256k1.pub2upub(settings.readline().strip())
     stride_sum = int(settings.readline().strip())
@@ -145,14 +145,14 @@ def subtraction_search():
     
     while True:
         cpub = secp256k1.point_to_cpub(starting_point)
-        if secp256k1.check_in_bloom(cpub, _bits1, _hashes1, _bf1):
+        if secp256k1.check_in_xor(cpub, _bits1, _hashes1, _xf1):
             print(f'\n[{datetime.now().strftime("%H:%M:%S")}] BloomFilter Hit {bloomfile1} (Even Point) [Higher Range Half]')
             P = starting_point
             privkey_num = []
             for i,p in enumerate(pow10_points):
                 count = 0
                 cpub1 = secp256k1.point_to_cpub(P)
-                while secp256k1.check_in_bloom(cpub1, _bits1, _hashes1, _bf1):
+                while secp256k1.check_in_xor(cpub1, _bits1, _hashes1, _xf1):
                     P = secp256k1.point_subtraction(P, p)
                     cpub1 = secp256k1.point_to_cpub(P)
                     count += 1
@@ -168,16 +168,16 @@ def subtraction_search():
                 return
             print(f'[{datetime.now().strftime("%H:%M:%S")}] False Positive')
  
-        if secp256k1.check_in_bloom(cpub, _bits2, _hashes2, _bf2):
+        if secp256k1.check_in_xor(cpub, _bits2, _hashes2, _xf2):
             print(f'\n[{datetime.now().strftime("%H:%M:%S")}] BloomFilter Hit {bloomfile2} (Odd Point) [Higher Range Half]')
             P = starting_point
             privkey_num = []
             for i,p in enumerate(pow10_points):
                 count = 0
-                cpub1 = secp256k1.point_to_cpub(P)
-                while secp256k1.check_in_bloom(cpub1, _bits2, _hashes2, _bf2):
+                cpub2 = secp256k1.point_to_cpub(P)
+                while secp256k1.check_in_xor(cpub2, _bits2, _hashes2, _xf2):
                     P = secp256k1.point_subtraction(P, p)
-                    cpub1 = secp256k1.point_to_cpub(P)
+                    cpub2 = secp256k1.point_to_cpub(P)
                     count += 1
                 privkey_num.append(pow10_nums[i] * (count - 1))
                 P = secp256k1.point_addition(P, p)
@@ -210,7 +210,7 @@ def main():
     p2.start()
     data = queue.get()
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Privatekey: {data}')
-    f = open("found_key.txt", "a")
+    f = open("x_found_key.txt", "a")
     f.write(f"{data}\n")
     f.close()
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Time taken : %.2f sec' % (time.time()-starttime))
