@@ -104,10 +104,10 @@ def addition_search():
             privkey_num = []
             for i,p in enumerate(pow10_points):
                 count = 0
-                cpub1 = secp256k1.point_to_cpub(P)
-                while secp256k1.check_in_bloom(cpub1, _bits2, _hashes2, _bf2):
+                cpub2 = secp256k1.point_to_cpub(P)
+                while secp256k1.check_in_bloom(cpub2, _bits2, _hashes2, _bf2):
                     P = secp256k1.point_subtraction(P, p)
-                    cpub1 = secp256k1.point_to_cpub(P)
+                    cpub2 = secp256k1.point_to_cpub(P)
                     count += 1
                 privkey_num.append(pow10_nums[i] * (count - 1))
                 P = secp256k1.point_addition(P, p)                
@@ -174,10 +174,10 @@ def subtraction_search():
             privkey_num = []
             for i,p in enumerate(pow10_points):
                 count = 0
-                cpub1 = secp256k1.point_to_cpub(P)
-                while secp256k1.check_in_bloom(cpub1, _bits2, _hashes2, _bf2):
+                cpub2 = secp256k1.point_to_cpub(P)
+                while secp256k1.check_in_bloom(cpub2, _bits2, _hashes2, _bf2):
                     P = secp256k1.point_subtraction(P, p)
-                    cpub1 = secp256k1.point_to_cpub(P)
+                    cpub2 = secp256k1.point_to_cpub(P)
                     count += 1
                 privkey_num.append(pow10_nums[i] * (count - 1))
                 P = secp256k1.point_addition(P, p)
