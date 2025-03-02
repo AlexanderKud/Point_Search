@@ -1,6 +1,6 @@
 <b>generate_bloom.py</b>
 <pre>
-[01:59:19] S_table and P_table generated
+[01:59:19] P_table generated
 [01:59:19] Settings written to file
 [01:59:19] Creating bloomfile2
 [01:59:19] Creating bloomfile1
