@@ -1,5 +1,6 @@
 import secp256k1
 from datetime import datetime
+import time
 import os
 import sys
 import multiprocessing as mp
@@ -18,15 +19,16 @@ for i in range(256):
 
 print(f"[{datetime.now().strftime("%H:%M:%S")}] P_table generated")
 #==============================================================================
-start_range = 57
-end_range   = 58
-block_width = 28
+start_range = 49
+end_range   = 50
+block_width = 24
+bloom_inc = 1.3
         
 start_point = P_table[start_range]
 end_point   = P_table[end_range]
 point_05 = secp256k1.scalar_multiplication(57896044618658097711785492504343953926418782139537452191302581570759080747169)
 
-search_pub = '028b8715f7c25858790d2207fb84be96567f3d3367122fbcd69221ab063039167c'
+search_pub = '03de608005a4b7fedc1de3b049d5e2facfbed53b111fbec4adfd59e082bb1bb02a'
 puzzle_point = secp256k1.pub2upub(search_pub)
 
 puzzle_point_05 = secp256k1.point_addition(puzzle_point, point_05)
@@ -56,33 +58,51 @@ f2.write(f"{stride_sum}\n")
 f2.close()
 print(f"[{datetime.now().strftime("%H:%M:%S")}] Settings written to file")
 #==============================================================================
+
 def bloom_create1():
     bloomfile1 = 'xor_bloom1.xf'
     G = secp256k1.scalar_multiplication(1)
-    _elem = (2 * (2**block_width))
+    _elem = int(bloom_inc * (2**block_width))
     _fp = 0.000001
     _bits, _hashes = secp256k1.xor_para(_elem, _fp)
     _xf = (b'\x00') * ((_bits + 7) // 8)
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Creating xor_bloom1')
     P = puzzle_point
+    points = []
+    add_counter = 0
+    chunk = 2**block_width // 10
     for i in range(2**block_width):
-        secp256k1.add_to_xor(secp256k1.point_to_cpub(P), _bits, _hashes, _xf)
+        points.append(secp256k1.point_to_cpub(P))
         P = secp256k1.point_addition(P, G)
+        add_counter += 1
+        if add_counter % chunk == 0:
+            secp256k1.add_list_to_xor(tuple(points), _bits, _hashes, _xf)
+            add_counter = 0
+            points.clear()
+                
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Writing Bloomfilter to {bloomfile1}')
     secp256k1.dump_xor_file(bloomfile1, _bits, _hashes, _xf, _fp, _elem)
 
 def bloom_create2():
     bloomfile2 = 'xor_bloom2.xf'
     G = secp256k1.scalar_multiplication(1)
-    _elem = (2 * (2**block_width))
+    _elem = int(bloom_inc * (2**block_width))
     _fp = 0.000001
     _bits, _hashes = secp256k1.xor_para(_elem, _fp)
     _xf = (b'\x00') * ((_bits + 7) // 8)
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Creating xor_bloom2')
     P = puzzle_point_05
+    points = []
+    add_counter = 0
+    chunk = 2**block_width // 10
     for i in range(2**block_width):
-        secp256k1.add_to_xor(secp256k1.point_to_cpub(P), _bits, _hashes, _xf)
+        points.append(secp256k1.point_to_cpub(P))
         P = secp256k1.point_addition(P, G)
+        add_counter += 1
+        if add_counter % chunk == 0:
+            secp256k1.add_list_to_xor(tuple(points), _bits, _hashes, _xf)
+            add_counter = 0
+            points.clear()
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Writing Bloomfilter to {bloomfile2}')
     secp256k1.dump_xor_file(bloomfile2, _bits, _hashes, _xf, _fp, _elem)
 
@@ -96,8 +116,13 @@ def main():
     out()
     
 def out():
+    elapsed_time = time.time() - start_time
+    hours, rem = divmod(elapsed_time, 3600)
+    minutes, seconds = divmod(rem, 60)
+    print(f'[{datetime.now().strftime("%H:%M:%S")}] Time taken: hours:{int(hours)} minutes:{int(minutes)} seconds:{int(seconds)}')
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Done. Press <ENTER> to exit...')
     input()
 #==============================================================================
 if __name__ == '__main__':
+    start_time = time.time()    
     main()

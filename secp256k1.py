@@ -1074,7 +1074,7 @@ def to_cpub(pub_hex):
 def point_to_cpub(pubkey_bytes):
     P = pubkey_bytes.hex()
     if len(P) > 70:
-        P = '02' + P[2:66] if int(P[66:],16)%2 == 0 else '03' + P[2:66]
+        P = '02' + P[2:66] if int(P[66:],16) % 2 == 0 else '03' + P[2:66]
     return P
 #==============================================================================
 def pub2upub(pub_hex):
@@ -1102,9 +1102,14 @@ def Fill_in_bloom(inp_list, _fp = 0.000001):
     del res
     return _bits, _hashes, _bf, _fp, len(inp_list)
 #==============================================================================
+def add_list_to_bloom(inp_list, _bits, _hashes, _bf):
+    for line in inp_list:
+        tt = line.encode("utf-8")
+        res = ice.bloom_check_add(tt, len(tt), 1, _bits, _hashes, _bf)  # 1 = Add
+    del res
+#==============================================================================
 def add_to_bloom(item, _bits, _hashes, _bf):
-    if type(item) != bytes: tt = str(item).encode("utf-8")
-    else: tt = item
+    tt = item.encode("utf-8")
     res = ice.bloom_check_add(tt, len(tt), 1, _bits, _hashes, _bf)  # 1 = Add
     del res
 #==============================================================================
@@ -1221,9 +1226,14 @@ def fill_in_xor(inp_list, _fp = 0.000001):
     del res
     return _bits, _hashes, _xf, _fp, len(inp_list)
 #==============================================================================
+def add_list_to_xor(inp_list, _bits, _hashes, _xf):
+    for line in inp_list:
+        tt = line.encode("utf-8")
+        res = ice.xor_filter_add(tt, len(tt), _bits, _hashes, _xf)
+    del res
+#==============================================================================
 def add_to_xor(item, _bits, _hashes, _xf):
-    if type(item) != bytes: tt = str(item).encode("utf-8")
-    else: tt = item
+    tt = item.encode("utf-8")
     res = ice.xor_filter_add(tt, len(tt), _bits, _hashes, _xf)  # 1 = Add
     del res
 #==============================================================================

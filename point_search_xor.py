@@ -29,9 +29,9 @@ for k in range(256):
 
 print(f"[{datetime.now().strftime("%H:%M:%S")}] S_table and P_table generated")
 #============================================================================== 
-start_range = 57
-end_range   = 58
-block_width = 28
+start_range = 49
+end_range   = 50
+block_width = 24
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 pow10_nums = break_down_to_pow10(2**block_width)
 pow10_points = []
@@ -43,7 +43,7 @@ first_scalar  = S_table[start_range - 1]
 second_scalar = S_table[start_range - 2]
 pre_calc_sum = first_scalar + second_scalar
 
-search_pub = '028b8715f7c25858790d2207fb84be96567f3d3367122fbcd69221ab063039167c'
+search_pub = '03de608005a4b7fedc1de3b049d5e2facfbed53b111fbec4adfd59e082bb1bb02a'
 puzzle_point = secp256k1.pub2upub(search_pub)
 point_05 = secp256k1.scalar_multiplication(57896044618658097711785492504343953926418782139537452191302581570759080747169)
 puzzle_point_05 = secp256k1.point_addition(puzzle_point, point_05)
@@ -60,7 +60,6 @@ print(f'[{datetime.now().strftime("%H:%M:%S")}] Search Range: 2^{start_range} ..
 #==============================================================================
 queue = mp.Queue()
 G = secp256k1.scalar_multiplication(1)
-starttime = time.time()
 
 def addition_search():
     save_counter = 0
@@ -213,16 +212,20 @@ def main():
     f = open("x_found_key.txt", "a")
     f.write(f"{data}\n")
     f.close()
-    print(f'[{datetime.now().strftime("%H:%M:%S")}] Time taken : %.2f sec' % (time.time()-starttime))
     active = mp.active_children()
     for child in active:
         child.kill()
     out()
 
 def out():
+    elapsed_time = time.time() - start_time
+    hours, rem = divmod(elapsed_time, 3600)
+    minutes, seconds = divmod(rem, 60)
+    print(f'[{datetime.now().strftime("%H:%M:%S")}] Time taken: hours:{int(hours)} minutes:{int(minutes)} seconds:{int(seconds)}')
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Press <ENTER> to exit')
     input()
     sys.exit()
 #============================================================================== 
 if __name__ == '__main__':
+    start_time = time.time()
     main()
