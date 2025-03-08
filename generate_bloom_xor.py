@@ -19,16 +19,15 @@ for i in range(256):
 
 print(f"[{datetime.now().strftime("%H:%M:%S")}] P_table generated")
 #==============================================================================
-start_range = 49
-end_range   = 50
+start_range = 51
+end_range   = 52
 block_width = 24
-bloom_inc = 1.3
         
 start_point = P_table[start_range]
 end_point   = P_table[end_range]
 point_05 = secp256k1.scalar_multiplication(57896044618658097711785492504343953926418782139537452191302581570759080747169)
 
-search_pub = '03de608005a4b7fedc1de3b049d5e2facfbed53b111fbec4adfd59e082bb1bb02a'
+search_pub = '03eb708c5acebf58263f5af63b63f9f75b9f7a211d80c833237f37911da350796f'
 puzzle_point = secp256k1.pub2upub(search_pub)
 
 puzzle_point_05 = secp256k1.point_addition(puzzle_point, point_05)
@@ -58,6 +57,8 @@ f2.write(f"{stride_sum}\n")
 f2.close()
 print(f"[{datetime.now().strftime("%H:%M:%S")}] Settings written to file")
 #==============================================================================
+bloom_inc = 1.5
+chunk_divisor = int(2**block_width // 1000000)
 
 def bloom_create1():
     bloomfile1 = 'xor_bloom1.xf'
@@ -70,7 +71,7 @@ def bloom_create1():
     P = puzzle_point
     points = []
     add_counter = 0
-    chunk = 2**block_width // 10
+    chunk = 2**block_width // chunk_divisor
     for i in range(2**block_width):
         points.append(secp256k1.point_to_cpub(P))
         P = secp256k1.point_addition(P, G)
@@ -94,7 +95,7 @@ def bloom_create2():
     P = puzzle_point_05
     points = []
     add_counter = 0
-    chunk = 2**block_width // 10
+    chunk = 2**block_width // chunk_divisor
     for i in range(2**block_width):
         points.append(secp256k1.point_to_cpub(P))
         P = secp256k1.point_addition(P, G)
