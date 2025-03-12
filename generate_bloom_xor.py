@@ -64,7 +64,7 @@ def bloom_create1():
     bloomfile1 = 'xor_bloom1.xf'
     G = secp256k1.scalar_multiplication(1)
     _elem = int(bloom_inc * (2**block_width))
-    _fp = 0.000001
+    _fp = 0.0000001
     _bits, _hashes = secp256k1.xor_para(_elem, _fp)
     _xf = (b'\x00') * ((_bits + 7) // 8)
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Creating xor_bloom1')
@@ -88,7 +88,7 @@ def bloom_create2():
     bloomfile2 = 'xor_bloom2.xf'
     G = secp256k1.scalar_multiplication(1)
     _elem = int(bloom_inc * (2**block_width))
-    _fp = 0.000001
+    _fp = 0.0000001
     _bits, _hashes = secp256k1.xor_para(_elem, _fp)
     _xf = (b'\x00') * ((_bits + 7) // 8)
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Creating xor_bloom2')
