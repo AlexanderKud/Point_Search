@@ -120,7 +120,7 @@ def out():
     elapsed_time = time.time() - start_time
     hours, rem = divmod(elapsed_time, 3600)
     minutes, seconds = divmod(rem, 60)
-    print(f'[{datetime.now().strftime("%H:%M:%S")}] Time taken: hours:{int(hours)} minutes:{int(minutes)} seconds:{int(seconds)}')
+    print(f'[{datetime.now().strftime("%H:%M:%S")}] Time taken: {int(hours)} hours {int(minutes)} minutes {int(seconds)} seconds')
     print(f'[{datetime.now().strftime("%H:%M:%S")}] Done. Press <ENTER> to exit...')
     input()
 #==============================================================================
