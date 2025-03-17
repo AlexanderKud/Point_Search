@@ -57,7 +57,7 @@ f2.write(f"{stride_sum}\n")
 f2.close()
 print(f"[{datetime.now().strftime("%H:%M:%S")}] Settings written to file")
 #==============================================================================
-bloom_inc = 1.5
+bloom_inc = 1.7
 chunk_divisor = int(2**block_width // 1000000)
 
 def bloom_create1():
