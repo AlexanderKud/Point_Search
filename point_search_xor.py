@@ -32,6 +32,7 @@ print(f"[{datetime.now().strftime("%H:%M:%S")}] S_table and P_table generated")
 start_range = 51
 end_range   = 52
 block_width = 24
+search_pub = '03eb708c5acebf58263f5af63b63f9f75b9f7a211d80c833237f37911da350796f'
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 pow10_nums = break_down_to_pow10(2**block_width)
 pow10_points = []
@@ -42,12 +43,7 @@ stride_status = 2**block_width
 first_scalar  = S_table[start_range - 1]
 second_scalar = S_table[start_range - 2]
 pre_calc_sum = first_scalar + second_scalar
-
-search_pub = '03eb708c5acebf58263f5af63b63f9f75b9f7a211d80c833237f37911da350796f'
-puzzle_point = secp256k1.pub2upub(search_pub)
-point_05 = secp256k1.scalar_multiplication(57896044618658097711785492504343953926418782139537452191302581570759080747169)
-puzzle_point_05 = secp256k1.point_addition(puzzle_point, point_05)
-
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 bloomfile1 = 'xor_bloom1.xf'
 print(f'[{datetime.now().strftime("%H:%M:%S")}] Loading bloomfilter {bloomfile1}')
 _bits1, _hashes1, _xf1, _fp1, _elem1 = secp256k1.read_xor_file(bloomfile1)
@@ -58,9 +54,6 @@ print(f'[{datetime.now().strftime("%H:%M:%S")}] Each BloomFilter size: 2^{block_
 print(f'[{datetime.now().strftime("%H:%M:%S")}] Stride size: 2^{int(math.log2(stride_status))} ({stride_status})') 
 print(f'[{datetime.now().strftime("%H:%M:%S")}] Search Range: 2^{start_range} .. 2^{end_range} [{S_table[start_range]}-{S_table[end_range]}]')
 #==============================================================================
-queue = mp.Queue()
-G = secp256k1.scalar_multiplication(1)
-
 def addition_search():
     save_counter = 0
     settingsFile = 'x_settings1.txt'
@@ -227,5 +220,6 @@ def out():
     sys.exit()
 #============================================================================== 
 if __name__ == '__main__':
+    queue = mp.Queue()
     start_time = time.time()
     main()
