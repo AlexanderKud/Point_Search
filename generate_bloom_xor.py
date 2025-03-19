@@ -22,26 +22,21 @@ print(f"[{datetime.now().strftime("%H:%M:%S")}] P_table generated")
 start_range = 51
 end_range   = 52
 block_width = 24
-        
-start_point = P_table[start_range]
-end_point   = P_table[end_range]
-point_05 = secp256k1.scalar_multiplication(57896044618658097711785492504343953926418782139537452191302581570759080747169)
-
 search_pub = '03eb708c5acebf58263f5af63b63f9f75b9f7a211d80c833237f37911da350796f'
-puzzle_point = secp256k1.pub2upub(search_pub)
-
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+puzzle_point = secp256k1.pub2upub(search_pub)       
+point_05 = secp256k1.scalar_multiplication(57896044618658097711785492504343953926418782139537452191302581570759080747169)
 puzzle_point_05 = secp256k1.point_addition(puzzle_point, point_05)
-
 puzzle_point_divide2 = secp256k1.point_multiplication(puzzle_point, 57896044618658097711785492504343953926418782139537452191302581570759080747169)
-
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 first_point  = P_table[start_range - 1]
 second_point = P_table[start_range - 2]
-
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 P1 = secp256k1.point_subtraction(puzzle_point_divide2, first_point)
 P2 = secp256k1.point_subtraction(puzzle_point_divide2, second_point)
 Q1 = secp256k1.point_addition(P1, P2)
 Q2 = secp256k1.point_addition(puzzle_point_divide2, Q1)
-
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 starting_point = Q2
 stride_sum = 0
 
