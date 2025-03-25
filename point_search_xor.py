@@ -15,19 +15,13 @@ def break_down_to_pow10(num):
         nums.append(pow(10, pw))
     return nums
 #==============================================================================
-P_table = []
-pk = 1;
-for i in range(256):
-    P_table.append(secp256k1.scalar_multiplication(pk))
-    pk *= 2
-    
 S_table = []
 pk = 1
 for k in range(256): 
     S_table.append(pk) 
     pk *= 2
 
-print(f"[{datetime.now().strftime("%H:%M:%S")}] S_table and P_table generated")
+print(f"[{datetime.now().strftime("%H:%M:%S")}] S_table generated")
 #============================================================================== 
 start_range = 51
 end_range   = 52
@@ -70,7 +64,7 @@ def addition_search():
             print(f'\n[{datetime.now().strftime("%H:%M:%S")}] BloomFilter Hit {bloomfile1} (Even Point) [Lower Range Half]')            
             P = starting_point
             privkey_num = []
-            for i,p in enumerate(pow10_points):
+            for i, p in enumerate(pow10_points):
                 count = 0
                 cpub1 = secp256k1.point_to_cpub(P)
                 while secp256k1.check_in_xor(cpub1, _bits1, _hashes1, _xf1):
@@ -94,7 +88,7 @@ def addition_search():
             print(f'\n[{datetime.now().strftime("%H:%M:%S")}] BloomFilter Hit {bloomfile2} (Odd Point) [Lower Range Half]')
             P = starting_point
             privkey_num = []
-            for i,p in enumerate(pow10_points):
+            for i, p in enumerate(pow10_points):
                 count = 0
                 cpub2 = secp256k1.point_to_cpub(P)
                 while secp256k1.check_in_xor(cpub2, _bits2, _hashes2, _xf2):
@@ -141,7 +135,7 @@ def subtraction_search():
             print(f'\n[{datetime.now().strftime("%H:%M:%S")}] BloomFilter Hit {bloomfile1} (Even Point) [Higher Range Half]')
             P = starting_point
             privkey_num = []
-            for i,p in enumerate(pow10_points):
+            for i, p in enumerate(pow10_points):
                 count = 0
                 cpub1 = secp256k1.point_to_cpub(P)
                 while secp256k1.check_in_xor(cpub1, _bits1, _hashes1, _xf1):
@@ -164,7 +158,7 @@ def subtraction_search():
             print(f'\n[{datetime.now().strftime("%H:%M:%S")}] BloomFilter Hit {bloomfile2} (Odd Point) [Higher Range Half]')
             P = starting_point
             privkey_num = []
-            for i,p in enumerate(pow10_points):
+            for i, p in enumerate(pow10_points):
                 count = 0
                 cpub2 = secp256k1.point_to_cpub(P)
                 while secp256k1.check_in_xor(cpub2, _bits2, _hashes2, _xf2):
